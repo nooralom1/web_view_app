@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, prefer_final_fields
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -11,6 +11,7 @@ class BoiAcheWebViewApp extends StatefulWidget {
 }
 
 class _BoiAcheWebViewAppState extends State<BoiAcheWebViewApp> {
+  int _currentIndex = 0;
   late final WebViewController _controller;
   bool _isLoading = true;
   bool _isDarkMode = false;
@@ -50,42 +51,6 @@ class _BoiAcheWebViewAppState extends State<BoiAcheWebViewApp> {
       home: WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
-          drawer: Drawer(
-            child: ListView(
-              children: [
-                const DrawerHeader(
-                  decoration: BoxDecoration(color: Colors.blue),
-                  child: Text(
-                    'BoiAche',
-                    style: TextStyle(color: Colors.white, fontSize: 22),
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Home'),
-                  onTap: () => _controller.loadRequest(
-                    Uri.parse('https://boiache.com/'),
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Cart'),
-                  onTap: () => _controller.loadRequest(
-                    Uri.parse('https://boiache.com/cartPage'),
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Account'),
-                  onTap: () => _controller.loadRequest(
-                    Uri.parse('https://boiache.com/dashboard'),
-                  ),
-                ),
-                SwitchListTile(
-                  title: const Text('Dark Mode'),
-                  value: _isDarkMode,
-                  onChanged: (v) => setState(() => _isDarkMode = v),
-                ),
-              ],
-            ),
-          ),
           body: RefreshIndicator(
             onRefresh: _refreshPage,
             child: Stack(
@@ -97,19 +62,27 @@ class _BoiAcheWebViewAppState extends State<BoiAcheWebViewApp> {
             ),
           ),
           bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _currentIndex,
             onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+
               if (index == 0) {
                 _controller.loadRequest(Uri.parse('https://boiache.com/'));
               } else if (index == 1) {
                 _controller.loadRequest(
                   Uri.parse('https://boiache.com/cartPage'),
                 );
-              } else {
+              } else if (index == 2) {
                 _controller.loadRequest(
                   Uri.parse('https://boiache.com/dashboard'),
                 );
               }
             },
+            selectedItemColor: const Color(0xff1C487E),
+            unselectedItemColor: Colors.grey,
+            type: BottomNavigationBarType.fixed,
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
               BottomNavigationBarItem(
